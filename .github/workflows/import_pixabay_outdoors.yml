@@ -20,29 +20,55 @@ jobs:
       - name: Download Pixabay backgrounds
         shell: bash
         run: |
-          set -euo pipefail
-          mkdir -p BACKGROUNDS
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          import time
 
-          while IFS='|' read -r filename image_url; do
-            [ -z "${filename}" ] && continue
-            [[ "${filename}" == #* ]] && continue
+          manifest = Path("PIXABAY_OUTDOOR_IMPORT.txt")
+          out_dir = Path("BACKGROUNDS")
+          out_dir.mkdir(parents=True, exist_ok=True)
 
-            target="BACKGROUNDS/${filename}"
-            if [ -f "${target}" ]; then
-              echo "SKIP existing: ${filename}"
-              continue
-            fi
+          rows = []
+          for raw in manifest.read_text(encoding="utf-8").splitlines():
+              raw = raw.strip()
+              if not raw or raw.startswith("#"):
+                  continue
+              filename, image_url = raw.split("|", 1)
+              rows.append((filename.strip(), image_url.strip()))
 
-            echo "Downloading ${filename}"
-            curl -L --fail --retry 3 --retry-delay 2               -A "Mozilla/5.0"               -H "Referer: https://pixabay.com/"               "${image_url}"               -o "${target}"
+          downloaded = 0
+          for filename, image_url in rows:
+              dest = out_dir / filename
+              if dest.exists():
+                  print(f"SKIP existing: {filename}")
+                  continue
 
-            size=$(stat -c%s "${target}")
-            if [ "${size}" -lt 50000 ]; then
-              echo "Downloaded file is too small: ${filename} (${size} bytes)"
-              rm -f "${target}"
-              exit 1
-            fi
-          done < PIXABAY_OUTDOOR_IMPORT.txt
+              print(f"Downloading {filename}")
+              req = Request(
+                  image_url,
+                  headers={
+                      "User-Agent": "Mozilla/5.0",
+                      "Referer": "https://pixabay.com/",
+                      "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+                  },
+              )
+              with urlopen(req, timeout=60) as r:
+                  data = r.read()
+                  content_type = r.headers.get_content_type()
+
+              if not content_type.startswith("image/"):
+                  raise RuntimeError(f"Unexpected content type {content_type}: {image_url}")
+              if len(data) < 50000:
+                  raise RuntimeError(f"Downloaded file too small ({len(data)} bytes): {filename}")
+
+              dest.write_bytes(data)
+              print(f"SAVED {dest} ({len(data)} bytes)")
+              downloaded += 1
+              time.sleep(0.5)
+
+          print(f"Downloaded {downloaded} new backgrounds.")
+          PY
 
       - name: Commit imported backgrounds
         shell: bash
