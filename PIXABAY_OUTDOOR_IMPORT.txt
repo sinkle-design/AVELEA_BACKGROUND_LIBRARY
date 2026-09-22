@@ -1,11 +1,11 @@
-# filename|direct Pixabay CDN image URL
-BG_PIXABAY_OUTDOOR_01_BEACH_BOARDWALK.jpg|https://cdn.pixabay.com/photo/2021/03/03/16/00/beach-6065603_1280.jpg
-BG_PIXABAY_OUTDOOR_02_BEACH_WALKWAY.jpg|https://cdn.pixabay.com/photo/2016/09/05/14/21/beach-1646675_1280.jpg
-BG_PIXABAY_OUTDOOR_03_BEACH_OCEAN_PATH.jpg|https://cdn.pixabay.com/photo/2021/11/10/18/58/beach-6784630_1280.jpg
-BG_PIXABAY_OUTDOOR_04_PARK_BENCH_LAKE.jpg|https://cdn.pixabay.com/photo/2018/04/27/03/17/park-3353659_1280.jpg
-BG_PIXABAY_OUTDOOR_05_PARK_SPRING_PATH.jpg|https://cdn.pixabay.com/photo/2023/05/08/19/33/path-7979584_1280.jpg
-BG_PIXABAY_OUTDOOR_06_PARK_TREES_PATH.jpg|https://cdn.pixabay.com/photo/2021/09/22/16/05/park-6647230_1280.jpg
-BG_PIXABAY_OUTDOOR_07_PARK_LAWN_PATH.jpg|https://cdn.pixabay.com/photo/2021/09/20/16/40/path-6641297_1280.jpg
-BG_PIXABAY_OUTDOOR_08_GARDEN_TABLE.jpg|https://cdn.pixabay.com/photo/2016/06/17/02/41/garden-table-1462501_1280.jpg
-BG_PIXABAY_OUTDOOR_09_STONE_STAIRS.jpg|https://cdn.pixabay.com/photo/2021/11/16/11/35/stone-staircase-6800782_1280.jpg
-BG_PIXABAY_OUTDOOR_10_SEASIDE_BENCH.jpg|https://cdn.pixabay.com/photo/2017/12/06/17/56/bench-3002305_1280.jpg
+# Batch 2 | filename|direct Pixabay CDN image URL
+BG_PIXABAY_OUTDOOR_11_CAFE_TERRACE.jpg|https://cdn.pixabay.com/photo/2015/09/26/19/35/cafe-959632_1280.jpg
+BG_PIXABAY_OUTDOOR_12_CAFE_PATIO.jpg|https://cdn.pixabay.com/photo/2016/08/04/19/51/cafe-1570348_1280.jpg
+BG_PIXABAY_OUTDOOR_13_GARDEN_FURNITURE.jpg|https://cdn.pixabay.com/photo/2021/11/26/21/45/garden-furniture-6826787_1280.jpg
+BG_PIXABAY_OUTDOOR_14_PATIO_SEATING.jpg|https://cdn.pixabay.com/photo/2017/08/11/10/11/patio-2630238_1280.jpg
+BG_PIXABAY_OUTDOOR_15_GARDEN_STONE_PATH.jpg|https://cdn.pixabay.com/photo/2017/11/04/17/40/garden-path-2918263_1280.jpg
+BG_PIXABAY_OUTDOOR_16_GARDEN_STEPPING_STONES.jpg|https://cdn.pixabay.com/photo/2015/03/09/08/27/outdoor-garden-pathway-665191_1280.jpg
+BG_PIXABAY_OUTDOOR_17_TROPICAL_STONE_STEPS.jpg|https://cdn.pixabay.com/photo/2018/10/22/04/51/stone-steps-3764506_1280.jpg
+BG_PIXABAY_OUTDOOR_18_RIVER_ROCKS.jpg|https://cdn.pixabay.com/photo/2022/08/25/20/34/river-7411236_1280.jpg
+BG_PIXABAY_OUTDOOR_19_STONE_WALKWAY.jpg|https://cdn.pixabay.com/photo/2017/05/28/16/38/stones-2351419_1280.jpg
+BG_PIXABAY_OUTDOOR_20_SEASIDE_PROMENADE.jpg|https://cdn.pixabay.com/photo/2018/01/04/19/41/promenade-3061475_1280.jpg
