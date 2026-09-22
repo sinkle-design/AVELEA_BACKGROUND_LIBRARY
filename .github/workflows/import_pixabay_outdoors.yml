@@ -1,0 +1,109 @@
+name: Import Pixabay Outdoor Backgrounds
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "PIXABAY_OUTDOOR_IMPORT.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-backgrounds:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Pixabay backgrounds
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          from urllib.parse import urlparse
+          import html as html_lib
+          import re
+          import time
+
+          manifest = Path("PIXABAY_OUTDOOR_IMPORT.txt")
+          out_dir = Path("BACKGROUNDS")
+          out_dir.mkdir(parents=True, exist_ok=True)
+
+          def get(url):
+              req = Request(
+                  url,
+                  headers={
+                      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36",
+                      "Accept-Language": "en-US,en;q=0.9",
+                      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+                  },
+              )
+              with urlopen(req, timeout=45) as r:
+                  return r.read(), r.headers
+
+          def extract_image_url(page_text):
+              patterns = [
+                  r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)["\']',
+                  r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']',
+                  r'https://cdn\.pixabay\.com/photo/[^"\'<> ]+_1280\.jpg',
+                  r'https://cdn\.pixabay\.com/photo/[^"\'<> ]+_960_720\.jpg',
+              ]
+              for p in patterns:
+                  m = re.search(p, page_text, re.I)
+                  if m:
+                      return html_lib.unescape(m.group(1) if m.lastindex else m.group(0))
+              return None
+
+          rows = []
+          for raw in manifest.read_text(encoding="utf-8").splitlines():
+              raw = raw.strip()
+              if not raw or raw.startswith("#"):
+                  continue
+              filename, page_url = raw.split("|", 1)
+              rows.append((filename.strip(), page_url.strip()))
+
+          downloaded = 0
+          for filename, page_url in rows:
+              dest = out_dir / filename
+              if dest.exists():
+                  print(f"SKIP existing: {filename}")
+                  continue
+
+              print(f"Fetching page: {page_url}")
+              page_bytes, _ = get(page_url)
+              page_text = page_bytes.decode("utf-8", "ignore")
+              image_url = extract_image_url(page_text)
+              if not image_url:
+                  raise RuntimeError(f"Could not find Pixabay image URL for {page_url}")
+
+              print(f"Downloading: {image_url}")
+              image_bytes, headers = get(image_url)
+              content_type = headers.get_content_type()
+              if not content_type.startswith("image/"):
+                  raise RuntimeError(f"Unexpected content type {content_type} for {image_url}")
+              if len(image_bytes) < 50000:
+                  raise RuntimeError(f"Image too small ({len(image_bytes)} bytes): {image_url}")
+
+              dest.write_bytes(image_bytes)
+              print(f"SAVED {dest} ({len(image_bytes)} bytes)")
+              downloaded += 1
+              time.sleep(1)
+
+          print(f"Downloaded {downloaded} new backgrounds.")
+          PY
+
+      - name: Commit imported backgrounds
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add BACKGROUNDS
+          if git diff --cached --quiet; then
+            echo "No new backgrounds to commit."
+            exit 0
+          fi
+          git commit -m "Import 10 Pixabay outdoor backgrounds"
+          git push
